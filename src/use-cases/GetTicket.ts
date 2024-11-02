@@ -3,13 +3,13 @@ import { TicketRepository } from "../repositories/TicketRepository";
 export class GetTicket {
   private readonly ticketRepository = new TicketRepository();
   async execute(ticketId: string): Promise<Output | null> {
-    const ticketData = await this.ticketRepository.getTicket(ticketId);
-    if (!ticketData) return null;
+    const ticket = await this.ticketRepository.getTicket(ticketId);
+    if (!ticket) return null;
     return {
-      ticketId: ticketData.ticket_id,
-      eventId: ticketData.event_id,
-      email: ticketData.email,
-      price: ticketData.price.toNumber(),
+      ticketId: ticket.ticketId,
+      eventId: ticket.eventId,
+      email: ticket.email,
+      price: ticket.price,
     };
   }
 }

@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import { Ticket } from "../entities/Ticket";
 
 export class TicketRepository {
   private readonly db;
   constructor() {
     this.db = new PrismaClient();
   }
-  async saveTicket(ticket: any): Promise<void> {
+  async saveTicket(ticket: Ticket): Promise<void> {
     await this.db.ticket.create({
       data: {
         email: ticket.email,
@@ -15,10 +16,16 @@ export class TicketRepository {
       },
     });
   }
-  async getTicket(ticketId: string): Promise<any> {
+  async getTicket(ticketId: string): Promise<Ticket | null> {
     const ticketData = await this.db.ticket.findUnique({
       where: { ticket_id: ticketId },
     });
-    return ticketData;
+    if (!ticketData) return null;
+    return new Ticket(
+      ticketData?.ticket_id,
+      ticketData?.event_id,
+      ticketData?.email,
+      ticketData?.price.toNumber()
+    );
   }
 }
