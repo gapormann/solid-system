@@ -1,14 +1,19 @@
-import { TicketRepository } from "../repositories/TicketRepository";
+import { RepositoryFactory } from "../repositories/factory/RepositoryFactory.interface";
+import { TicketRepository } from "../repositories/ticket/TicketRepository.interface";
 
 export class GetTicket {
-  private readonly ticketRepository = new TicketRepository();
+  readonly ticketRepository: TicketRepository;
+  constructor(readonly repositoryFactory: RepositoryFactory) {
+    this.ticketRepository = repositoryFactory.createTicketRepository();
+  }
+
   async execute(ticketId: string): Promise<Output | null> {
     const ticket = await this.ticketRepository.getTicket(ticketId);
     if (!ticket) return null;
     return {
       ticketId: ticket.ticketId,
       eventId: ticket.eventId,
-      email: ticket.email,
+      email: ticket.getEmail(),
       price: ticket.price,
     };
   }
